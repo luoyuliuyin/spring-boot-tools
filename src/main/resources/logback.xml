@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_HOME" value="${user.dir}/logs"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%boldMagenta(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%boldCyan(%t)] %boldBlue(%p) %boldGreen(%c{50}:%L) -
+                %m%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/log-user.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%boldMagenta(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%boldCyan(%t)] %boldBlue(%p) %boldGreen(%c{50}:%L) -
+                %m%n
+            </pattern>
+        </layout>
+        <!--过滤器，记录INFO级别以上的日志-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/log-error.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%boldMagenta(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%boldCyan(%t)] %boldBlue(%p) %boldGreen(%c{50}:%L) -
+                %m%n
+            </pattern>
+        </layout>
+        <!--过滤器，记录WARN级别以上的日志-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <!--日志输出级别 输出INFO以上级别-->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="INFO"/>
+        <appender-ref ref="ERROR"/>
+    </root>
+
+</configuration>
