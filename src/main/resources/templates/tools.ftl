@@ -16,7 +16,7 @@
 <br>
 <div class="dataTables_filter">
     执行命令: <input id="command" aria-controls="DataTables_Table_0" style="width:500px;"
-                 onkeypress="if (event.keyCode === 13) commandRun();" value="ls -al"/>
+                 onkeypress="if (event.keyCode === 13) commandRun();" value="ls -lh"/>
     <button class="btn btn-success" onclick="commandRun()">&nbsp;执 行&nbsp;</button>
 </div>
 
