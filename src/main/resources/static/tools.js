@@ -6,12 +6,7 @@
 var websocket = null;
 
 if ('WebSocket' in window) {
-    var host = window.location.host;
-    if ("dump.mogu-inc.com" === window.location.host) {
-        host = "10.80.171.61";
-    }
-    var nickName = $("#spanNickName").text();
-    websocket = new WebSocket("ws://" + host + "/websocket/" + nickName);
+    websocket = new WebSocket("ws://" + window.location.host + "/websocket");
 } else {
     alert('Not support websocket')
 }
@@ -23,10 +18,6 @@ websocket.onerror = function () {
 websocket.onopen = function (event) {
     //alert("open");
 };
-
-/*websocket.onmessage = function (event) {
-    alert(event.data);
-};*/
 
 websocket.onclose = function () {
     //alert("close");
