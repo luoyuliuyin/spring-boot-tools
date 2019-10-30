@@ -6,17 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by jingfeng on 2017/7/11.
@@ -33,17 +28,19 @@ public class WebSocketController {
 
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        Map<String, List<String>> paras = session.getRequestParameterMap();
-        String command = paras.get("command").get(0);
+    }
+
+    @OnMessage
+    public void onMessage(String message, Session session) throws IOException {
 
         try {
             Runtime rt = Runtime.getRuntime();
-            Process p = rt.exec(new String[]{"/bin/sh", "-c", command});
+            Process p = rt.exec(new String[]{"/bin/sh", "-c", message});
 
             InputStream is = p.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line;
-            logger.info("执行命令开始：{}", command);
+            logger.info("执行命令开始：{}", message);
             while ((line = br.readLine()) != null) {
                 logger.info(line);
                 session.getBasicRemote().sendText(line);
@@ -68,7 +65,7 @@ public class WebSocketController {
             logger.error("执行命令error:", e);
             session.getBasicRemote().sendText(e.toString());
         }
-        logger.info("执行命令结束：{}", command);
+        logger.info("执行命令结束：{}", message);
         session.getBasicRemote().sendText("执行结束");
     }
 

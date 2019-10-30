@@ -3,33 +3,53 @@
  * tools.js
  */
 
-var logSocket = null;
+var websocket = null;
+
+if ('WebSocket' in window) {
+    var host = window.location.host;
+    if ("dump.mogu-inc.com" === window.location.host) {
+        host = "10.80.171.61";
+    }
+    var nickName = $("#spanNickName").text();
+    websocket = new WebSocket("ws://" + host + "/websocket/" + nickName);
+} else {
+    alert('Not support websocket')
+}
+
+websocket.onerror = function () {
+    //alert("WebSocket error");
+};
+
+websocket.onopen = function (event) {
+    //alert("open");
+};
+
+/*websocket.onmessage = function (event) {
+    alert(event.data);
+};*/
+
+websocket.onclose = function () {
+    //alert("close");
+};
+
+//listening window close event. when this window closed,to force close websocket,avoid the window not closing before the websocket closed.
+window.onbeforeunload = function () {
+    websocket.close();
+};
 
 function commandRun() {
     var command = $.trim($("#command").val());
+    websocket.send(command);
     var div = $("#jsonShow");
-
-    if ('WebSocket' in window) {
-        var host = window.location.host;
-        if ("127.0.0.1" !== window.location.host) {
-            host = "104.194.85.123";
+    var begin = true;
+    websocket.onmessage = function (event) {
+        if (begin) {
+            div.html("");
+            begin = false;
         }
-
-        logSocket = new WebSocket("ws://" + host + "/websocket?command=" + encodeURIComponent(command));
-
-        //接收消息函数
-        var begin = true;
-        logSocket.onmessage = function (event) {
-            if (begin) {
-                div.html("");
-                begin = false;
-            }
-            div.append(event.data + "<br>");
-        };
-        div.html("...ing" + "<br>");
-    } else {
-        alert('Not support websocket')
-    }
+        div.append(event.data + "<br>");
+    };
+    div.html("...ing" + "<br>");
 }
 
 function download() {
