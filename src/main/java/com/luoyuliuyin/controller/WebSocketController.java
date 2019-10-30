@@ -30,45 +30,49 @@ public class WebSocketController {
         return new ServerEndpointExporter();
     }
 
+    private static Object lock = new Object();
+
     @OnOpen
     public void onOpen(Session session) {
-        Map<String, List<String>> paras = session.getRequestParameterMap();
-        String command = paras.get("command").get(0);
+        synchronized (lock) {
+            Map<String, List<String>> paras = session.getRequestParameterMap();
+            String command = paras.get("command").get(0);
 
-        try {
-            Runtime rt = Runtime.getRuntime();
-            Process p = rt.exec(new String[]{"/bin/sh", "-c", command});
+            try {
+                Runtime rt = Runtime.getRuntime();
+                Process p = rt.exec(new String[]{"/bin/sh", "-c", command});
 
-            InputStream is = p.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line;
-            logger.info("执行命令开始：{}", command);
-            while ((line = br.readLine()) != null) {
-                logger.info(line);
-                session.getAsyncRemote().sendText(line);
-            }
-
-            while (p.isAlive()) {
-                Thread.sleep(100L);
-            }
-
-            if (p.exitValue() != 0) {
-                is = p.getErrorStream();
-                br = new BufferedReader(new InputStreamReader(is));
+                InputStream is = p.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                logger.info("执行命令开始：{}", command);
                 while ((line = br.readLine()) != null) {
-                    logger.error(line);
+                    logger.info(line);
                     session.getAsyncRemote().sendText(line);
                 }
-            }
 
-            br.close();
-            is.close();
-        } catch (Exception e) {
-            logger.error("执行命令error:", e);
-            session.getAsyncRemote().sendText(e.toString());
+                while (p.isAlive()) {
+                    Thread.sleep(100L);
+                }
+
+                if (p.exitValue() != 0) {
+                    is = p.getErrorStream();
+                    br = new BufferedReader(new InputStreamReader(is));
+                    while ((line = br.readLine()) != null) {
+                        logger.error(line);
+                        session.getAsyncRemote().sendText(line);
+                    }
+                }
+
+                br.close();
+                is.close();
+            } catch (Exception e) {
+                logger.error("执行命令error:", e);
+                session.getAsyncRemote().sendText(e.toString());
+            }
+            logger.info("执行命令结束：{}", command);
+            session.getAsyncRemote().sendText("执行结束");
         }
-        logger.info("执行命令结束：{}", command);
-        session.getAsyncRemote().sendText("执行结束");
     }
 
     @OnClose
