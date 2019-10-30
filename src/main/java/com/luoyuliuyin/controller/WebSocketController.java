@@ -41,10 +41,6 @@ public class WebSocketController {
                 Runtime rt = Runtime.getRuntime();
                 Process p = rt.exec(new String[]{"/bin/sh", "-c", message});
 
-                while (p.isAlive()) {
-                    Thread.sleep(100L);
-                }
-
                 InputStream is = p.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line;
@@ -52,6 +48,10 @@ public class WebSocketController {
                 while ((line = br.readLine()) != null) {
                     logger.info(line);
                     session.getBasicRemote().sendText(line);
+                }
+
+                while (p.isAlive()) {
+                    Thread.sleep(100L);
                 }
 
                 if (p.exitValue() != 0) {
