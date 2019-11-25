@@ -47,7 +47,13 @@ public class WebSocketController {
                 logger.info("执行命令开始：{}", message);
                 while ((line = br.readLine()) != null) {
                     logger.info(line);
-                    session.getBasicRemote().sendText(line);
+                    try{
+                        session.getBasicRemote().sendText(line);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        System.out.println("错误行："+line);
+                        System.out.println("错误session："+session);
+                    }
                 }
 
                 is = p.getInputStream();
