@@ -41,7 +41,7 @@ public class WebSocketController {
                 ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", message);
                 Process p = processBuilder.start();
 
-                InputStream is = p.getInputStream();
+                InputStream is = p.getErrorStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line;
                 logger.info("执行命令开始：{}", message);
@@ -50,7 +50,7 @@ public class WebSocketController {
                     session.getBasicRemote().sendText(line);
                 }
 
-                is = p.getErrorStream();
+                is = p.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
                 while ((line = br.readLine()) != null) {
                     logger.info(line);
