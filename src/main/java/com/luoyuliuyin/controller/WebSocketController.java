@@ -38,8 +38,8 @@ public class WebSocketController {
 
         Thread thread = new Thread(() -> {
             try {
-                Runtime rt = Runtime.getRuntime();
-                Process p = rt.exec(new String[]{"/bin/sh", "-c", message});
+                ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", message);
+                Process p = processBuilder.start();
 
                 InputStream is = p.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -50,17 +50,16 @@ public class WebSocketController {
                     session.getBasicRemote().sendText(line);
                 }
 
-                while (p.isAlive()) {
-                    Thread.sleep(100L);
+                is = p.getErrorStream();
+                br = new BufferedReader(new InputStreamReader(is));
+                while ((line = br.readLine()) != null) {
+                    logger.info(line);
+                    session.getBasicRemote().sendText(line);
                 }
 
-                if (p.exitValue() != 0) {
-                    is = p.getErrorStream();
-                    br = new BufferedReader(new InputStreamReader(is));
-                    while ((line = br.readLine()) != null) {
-                        logger.error(line);
-                        session.getBasicRemote().sendText(line);
-                    }
+                if (p.waitFor() != 0) {
+                    logger.error("执行命令error！");
+                    session.getBasicRemote().sendText("执行命令error！");
                 }
 
                 br.close();
