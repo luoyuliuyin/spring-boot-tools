@@ -76,8 +76,8 @@ public class WebSocketController {
                 }
             }
         });
-        thread.start();
         runningMap.put(session, thread);
+        thread.start();
     }
 
     @OnClose
