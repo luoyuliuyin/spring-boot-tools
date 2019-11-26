@@ -8,7 +8,7 @@
 <h1>Tools</h1>
 
 <div>
-    文件列表: <select id="files" style="width:60%;">
+    文件列表: <select id="files" style="width:50%;">
         <#list files as file>
             <option value="${file}">${file}</option>
         </#list>
@@ -17,7 +17,7 @@
 </div>
 <br>
 <div class="dataTables_filter">
-    执行命令: <input id="command" aria-controls="DataTables_Table_0" style="width:60%;" onkeypress="if (event.keyCode === 13) commandRun();" value="ls -lh"/>
+    执行命令: <input id="command" aria-controls="DataTables_Table_0" style="width:50%;" onkeypress="if (event.keyCode === 13) commandRun();" value="ls -lh"/>
     <button class="btn btn-success" onclick="commandRun()">&nbsp;执 行&nbsp;</button>
 </div>
 
