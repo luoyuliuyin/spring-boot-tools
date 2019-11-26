@@ -1,6 +1,5 @@
 package com.luoyuliuyin.controller;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -48,18 +47,16 @@ public class WebSocketController {
                 logger.info("执行命令开始：{}", message);
                 while ((line = br.readLine()) != null) {
                     logger.info(line);
-                    if (StringUtils.isNotEmpty(line)) {
-                        session.getBasicRemote().sendText(line);
-                    }
+                    line = "".equals(line) ? " " : line;
+                    session.getBasicRemote().sendText(line);
                 }
 
                 is = p.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
                 while ((line = br.readLine()) != null) {
                     logger.info(line);
-                    if (StringUtils.isNotEmpty(line)) {
-                        session.getBasicRemote().sendText(line);
-                    }
+                    line = "".equals(line) ? " " : line;
+                    session.getBasicRemote().sendText(line);
                 }
 
                 if (p.waitFor() != 0) {
