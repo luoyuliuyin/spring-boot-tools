@@ -2,8 +2,7 @@
  * Created by luoyuliuyin on 16-6-15.
  * tools.js
  */
-
-var websocket = null;
+let websocket = null;
 
 if ('WebSocket' in window) {
     websocket = new WebSocket("ws://" + window.location.host + "/websocket");
@@ -29,10 +28,10 @@ window.onbeforeunload = function () {
 };
 
 function commandRun() {
-    var command = $.trim($("#command").val());
+    let command = $.trim($("#command").val());
     websocket.send(command);
-    var div = $("#jsonShow");
-    var begin = true;
+    let div = $("#jsonShow");
+    let begin = true;
     websocket.onmessage = function (event) {
         if (begin) {
             div.html("");
@@ -44,6 +43,6 @@ function commandRun() {
 }
 
 function download() {
-    var file = $("#files").find("option:selected").val();
+    const file = $("#files").find("option:selected").val();
     window.location.href = "download?file=" + encodeURIComponent(file);
 }
