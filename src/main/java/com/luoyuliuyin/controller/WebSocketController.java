@@ -46,7 +46,7 @@ public class WebSocketController {
                 String line;
                 logger.info("执行命令开始：{}", message);
                 while ((line = br.readLine()) != null) {
-                    logger.info(line);
+                    //logger.info(line);
                     line = "".equals(line) ? " " : line;
                     session.getBasicRemote().sendText(line);
                 }
@@ -54,7 +54,7 @@ public class WebSocketController {
                 is = p.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
                 while ((line = br.readLine()) != null) {
-                    logger.info(line);
+                    //logger.info(line);
                     line = "".equals(line) ? " " : line;
                     session.getBasicRemote().sendText(line);
                 }
